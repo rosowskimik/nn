@@ -48,7 +48,7 @@ class NeuralNetwork:
         for layer in self.layers:
             output = layer.forward(output)
 
-        return output
+        return np.reshape(output, (output.shape[0],))
 
     def backward(self, output_error: np.ndarray, learning_rate: float):
         input_error = output_error
