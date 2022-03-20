@@ -6,7 +6,7 @@ from nn.layers.base import BaseLayer
 
 
 @dataclass()
-class DenseLayer(BaseLayer):
+class Dense(BaseLayer):
     """A layer, where each input is connected to all outputs."""
 
     weights: np.ndarray
@@ -15,10 +15,19 @@ class DenseLayer(BaseLayer):
     def __init__(self, input_size: int, neuron_count: int):
         """Create new `DenseLayer` with random weights and biases which maps `input_size` inputs to `neuron_count` neurons."""
         self.weights = np.random.randn(neuron_count, input_size)
-        self.biases = np.random.randn(neuron_count)
+        self.biases = np.random.randn(neuron_count, 1)
 
     def forward(self, inputs: np.ndarray) -> np.ndarray:
+        super().forward(inputs)
         return np.dot(self.weights, inputs) + self.biases
+
+    def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
+        weights_gradient = np.dot(output_gradient, self.inputs.T)
+        input_gradient = np.dot(self.weights.T, output_gradient)
+
+        self.weights -= learning_rate * weights_gradient
+        self.biases -= learning_rate * output_gradient
+        return input_gradient
 
     def cross_with(self, other: Self) -> Self:
         """Creates new layer from crossing of two layers."""
@@ -26,7 +35,7 @@ class DenseLayer(BaseLayer):
         assert self.biases.shape == other.biases.shape
 
         neuron_count, input_size = self.weights.shape
-        crossed_layer = DenseLayer(input_size, neuron_count)
+        crossed_layer = Dense(input_size, neuron_count)
 
         for idx in np.ndindex(crossed_layer.weights.shape):
             crossed_layer.weights[idx] = (

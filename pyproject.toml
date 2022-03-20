@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nn"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Mikołaj Rosowski <m.rosowski1@wp.pl>"]
 license = "MIT"

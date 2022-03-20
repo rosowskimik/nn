@@ -1,4 +1,5 @@
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
-from nn.layers import activators
-from nn.network import GeneticNeuralNetwork
+from . import losses
+
+from .network import NeuralNetwork

@@ -1,6 +1,4 @@
-from nn.layers.base import BaseLayer
-from nn.layers.dense import DenseLayer
-from nn.layers.softmax import SoftmaxLayer
-from nn.layers.combined import CombinedLayer
+from .base import BaseLayer
+from .dense import Dense
 
-import nn.layers.activators
+from .activators import *

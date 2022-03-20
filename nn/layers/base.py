@@ -1,20 +1,26 @@
 from dataclasses import dataclass
+from typing import Optional
 
 import jsonpickle
 import numpy as np
 from typing_extensions import Self
 
 
-@dataclass()
+@dataclass(kw_only=True)
 class BaseLayer:
     """Base Layer class from which all layers inherit.
     Should not be instanciated on its own. All derived classes should implement `forward` method."""
 
+    inputs: Optional[np.ndarray] = None
+    # outputs: Optional[np.ndarray] = None
+
     def forward(self, inputs: np.ndarray) -> np.ndarray:
         """Forwards input array through this layer."""
-        raise NotImplementedError
+        self.inputs = inputs
+        return inputs
 
-    # def backward(self, )
+    def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
+        raise NotImplementedError
 
     def cross_with(self, other: Self) -> Self:
         return self
