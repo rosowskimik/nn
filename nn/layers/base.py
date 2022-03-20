@@ -14,11 +14,19 @@ class BaseLayer:
         """Forwards input array through this layer."""
         raise NotImplementedError
 
+    # def backward(self, )
+
+    def cross_with(self, other: Self) -> Self:
+        return self
+
+    def mutate_layer(self, mutation_rate: float):
+        pass
+
     def to_json(self) -> str:
         """Converts layer to json."""
         return jsonpickle.encode(self)
 
-    @staticmethod
-    def from_json(json: str) -> Self:
+    @classmethod
+    def from_json(cls, json: str) -> Self:
         """Loads Layer from json."""
         return jsonpickle.decode(json)

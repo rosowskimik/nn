@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
-from gnn.layers.base import BaseLayer
+from nn.layers.base import BaseLayer
 
 
 @dataclass()

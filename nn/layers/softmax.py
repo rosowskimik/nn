@@ -1,5 +1,5 @@
 import numpy as np
-from gnn.layers.base import BaseLayer
+from nn.layers.base import BaseLayer
 
 
 class SoftmaxLayer(BaseLayer):
@@ -7,4 +7,4 @@ class SoftmaxLayer(BaseLayer):
 
     def forward(self, inputs: np.ndarray) -> np.ndarray:
         exponentiated = np.exp(inputs)
-        return exponentiated / exponentiated.sum()
+        return exponentiated / np.sum(exponentiated)
