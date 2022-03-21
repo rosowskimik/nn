@@ -1,3 +1,3 @@
 from .pickers import *
 
-from .pool import GenerationPool
+from .pool import NetworkPool
