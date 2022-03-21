@@ -27,6 +27,8 @@ class ActivationLayer(BaseLayer):
 
 @dataclass()
 class Linear(ActivationLayer):
+    """Range(-inf, inf)"""
+
     def activate(self, val: float) -> float:
         return val
 
@@ -36,6 +38,8 @@ class Linear(ActivationLayer):
 
 @dataclass()
 class Logistic(ActivationLayer):
+    """Range(0,1)"""
+
     def activate(self, val: float) -> float:
         return 1 / (1 + np.exp(-val))
 
@@ -45,6 +49,8 @@ class Logistic(ActivationLayer):
 
 @dataclass()
 class Tahn(ActivationLayer):
+    """Range(-1,1)"""
+
     def activate(self, val: float) -> float:
         return (np.exp(val) - np.exp(-val)) / (np.exp(val) + np.exp(-val))
 
@@ -54,6 +60,8 @@ class Tahn(ActivationLayer):
 
 @dataclass()
 class ReLU(ActivationLayer):
+    """Range(0,inf)"""
+
     def activate(self, val: float) -> float:
         return max(0, val)
 
@@ -63,6 +71,8 @@ class ReLU(ActivationLayer):
 
 @dataclass()
 class ParametricReLU(ActivationLayer):
+    """Range(-inf,inf)"""
+
     slope: float = 0.1
 
     def activate(self, val: float) -> float:
@@ -74,6 +84,8 @@ class ParametricReLU(ActivationLayer):
 
 @dataclass()
 class ELU(ActivationLayer):
+    """Range(-inf, inf)"""
+
     slope: float = 1
 
     def activate(self, val: float) -> float:
@@ -85,6 +97,8 @@ class ELU(ActivationLayer):
 
 @dataclass()
 class Swish(ActivationLayer):
+    """Range(-inf, inf)"""
+
     def activate(self, val: float) -> float:
         return val / (1 + np.exp(-val))
 
@@ -96,6 +110,8 @@ class Swish(ActivationLayer):
 
 @dataclass()
 class SELU(ActivationLayer):
+    """Range(-inf, inf)"""
+
     slope: float = 1.0
 
     def activate(self, val: float) -> float:
