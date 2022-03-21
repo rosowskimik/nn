@@ -1,5 +1,5 @@
 __version__ = "1.1.0"
 
-from . import losses
+from . import losses, genetic
 
 from .network import NeuralNetwork
