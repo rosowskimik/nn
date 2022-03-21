@@ -48,7 +48,7 @@ class Logistic(ActivationLayer):
 
 
 @dataclass()
-class Tahn(ActivationLayer):
+class Tanh(ActivationLayer):
     """Range(-1,1)"""
 
     def activate(self, val: float) -> float:
