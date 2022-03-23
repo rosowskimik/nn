@@ -22,6 +22,9 @@ class BaseLayer:
     def backward(self, output_gradient: np.ndarray, learning_rate: float) -> np.ndarray:
         raise NotImplementedError
 
+    def randomize(self):
+        pass
+
     def cross_with(self, other: Self) -> Self:
         return self
 

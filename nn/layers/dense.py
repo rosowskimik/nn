@@ -29,6 +29,10 @@ class Dense(BaseLayer):
         self.biases -= learning_rate * output_gradient
         return input_gradient
 
+    def randomize(self):
+        self.weights = np.random.randn(*self.weights.shape)
+        self.biases = np.random.randn(*self.biases.shape)
+
     def cross_with(self, other: Self) -> Self:
         """Creates new layer from crossing of two layers."""
         assert self.weights.shape == other.weights.shape
