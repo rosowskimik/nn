@@ -1,0 +1,66 @@
+name: Release Package
+
+env:
+  POETRY_CACHE_DIR: "~/.cache/poetry"
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag name for release"
+        required: false
+        default: nightly
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  # Build package
+  github_build:
+    name: Create python package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup | Python
+        uses: actions/setup-python@v3
+        id: setup-python
+        with:
+          python-version: "3.10"
+
+      - name: Setup | Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Build | Build
+        run: poetry build -vvv
+
+      - name: Deploy | Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+  
+  # Create GitHub Release
+  github_release:
+    name: Create GitHub Release
+    needs: github_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Set Reelase Tag [Dispatch]
+        if: github.event.name == 'workflow_dispatch'
+        run: echo "TAG_NAME=${{ github.event.inputs.tag_name }}" >> $GITHUB_ENV
+      
+      - name: Setup | Artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Setup | Checksums
+        run: for file in dist/nn-*; do openssl dgst -sha256 -r "$file" | awk '{print $1}' > "${file}.sha256"; done
+      
+      - name: Deploy | Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          files: dist/nn-*
+          fail_on_unmatched_files: true
+          generate_release_notes: false
