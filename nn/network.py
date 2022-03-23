@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 from itertools import pairwise
-from typing import Iterator
-from typing_extensions import Self
-import jsonpickle
+from os import PathLike
+from pathlib import Path
+from typing import Iterator, Optional
 
+import jsonpickle
 import numpy as np
-from nn.layers.activators import ActivationLayer
+from typing_extensions import Self
+
 from nn.layers import BaseLayer, Dense
+from nn.layers.activators import ActivationLayer
 
 
 @dataclass()
@@ -71,6 +74,32 @@ class NeuralNetwork:
     @staticmethod
     def from_json(json: str) -> "NeuralNetwork":
         return jsonpickle.decode(json)
+
+    def to_file(
+        self,
+        filename: str,
+        directory: Optional[PathLike] = None,
+        create_parents: bool = False,
+        overwrite: bool = True,
+    ):
+        directory = Path.cwd() if directory is None else Path(directory)
+
+        if not directory.exists():
+            directory.mkdir(parents=create_parents)
+
+        elif not directory.is_dir():
+            raise NotADirectoryError
+
+        target = directory.joinpath(filename + ".ntw")
+        mode = "w" if overwrite else "x"
+
+        with open(target, mode) as f:
+            f.write(self.to_json())
+
+    @staticmethod
+    def from_file(file: PathLike) -> "NeuralNetwork":
+        with open(file) as f:
+            return jsonpickle.decode(f.read())
 
     def __iter__(self) -> Iterator[BaseLayer]:
         return iter(self.layers)

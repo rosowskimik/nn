@@ -1,6 +1,8 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Callable
+from os import PathLike
+from typing import Callable, Optional
+from black import Path
 import jsonpickle
 
 import numpy as np
@@ -71,3 +73,29 @@ class NetworkPool:
 
     def to_json(self) -> str:
         return jsonpickle.encode(self)
+
+    @staticmethod
+    def from_file(file: PathLike) -> "NetworkPool":
+        with open(file) as f:
+            return jsonpickle.decode(f.read())
+
+    def to_file(
+        self,
+        filename: str,
+        directory: Optional[PathLike] = None,
+        create_parents: bool = False,
+        overwrite: bool = True,
+    ):
+        directory = Path.cwd() if directory is None else Path(directory)
+
+        if not directory.exists():
+            directory.mkdir(parents=create_parents)
+
+        elif not directory.is_dir():
+            raise NotADirectoryError
+
+        target = directory.joinpath(filename + ".ntp")
+        mode = "w" if overwrite else "x"
+
+        with open(target, mode) as f:
+            f.write(self.to_json())
