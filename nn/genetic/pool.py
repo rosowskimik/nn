@@ -1,6 +1,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Callable
+import jsonpickle
 
 import numpy as np
 from nn.genetic.pickers import Picker
@@ -61,3 +62,12 @@ class NetworkPool:
             crossed.mutate_network(muation_rate)
 
             new_networks.append(crossed)
+
+        self.generation += 1
+
+    @staticmethod
+    def from_json(json: str) -> "NetworkPool":
+        return jsonpickle.decode(json)
+
+    def to_json(self) -> str:
+        return jsonpickle.encode(self)
