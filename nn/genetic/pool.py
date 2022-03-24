@@ -1,8 +1,8 @@
 from copy import deepcopy
 from dataclasses import dataclass
 from os import PathLike
-from typing import Callable, Optional
-from black import Path
+from typing import Optional
+from pathlib import Path
 import jsonpickle
 
 import numpy as np
