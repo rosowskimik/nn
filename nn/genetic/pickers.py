@@ -28,18 +28,18 @@ class Picker:
 class RandomPicker(Picker):
     def pick(self) -> tuple[NeuralNetwork, NeuralNetwork]:
         n1, n2 = np.random.choice(self.pool, 2, replace=False)
-        return tuple(n1, n2)
+        return (n1, n2)
 
 
 @dataclass()
 class WeightedPicker(Picker):
     def pick(self) -> tuple[NeuralNetwork, NeuralNetwork]:
         n1, n2 = np.random.choice(self.pool, 2, replace=False, p=self.fitnesses)
-        return tuple(n1, n2)
+        return (n1, n2)
 
 
 @dataclass()
 class BestPicker(Picker):
     def pick(self) -> tuple[NeuralNetwork, NeuralNetwork]:
         n1, n2 = self.best_n(2)
-        return tuple(n1, n2)
+        return (n1, n2)

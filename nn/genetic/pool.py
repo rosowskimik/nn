@@ -48,7 +48,7 @@ class NetworkPool:
         )
 
     def next_generation(
-        self, muation_rate: float, fitness: list[float], keep_best: int = 1
+        self, mutation_rate: float, fitness: list[float], keep_best: int = 1
     ):
         assert keep_best <= len(self.networks)
         new_networks = list()
@@ -61,7 +61,7 @@ class NetworkPool:
             p1, p2 = self.picker.pick()
 
             crossed = p1.cross_with(p2)
-            crossed.mutate_network(muation_rate)
+            crossed.mutate_network(mutation_rate)
 
             new_networks.append(crossed)
 
