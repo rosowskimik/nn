@@ -1,7 +1,8 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Optional
 
-import jsonpickle
+import pickle
 import numpy as np
 from typing_extensions import Self
 
@@ -31,11 +32,14 @@ class BaseLayer:
     def mutate_layer(self, mutation_rate: float):
         pass
 
-    def to_json(self) -> str:
-        """Converts layer to json."""
-        return jsonpickle.encode(self)
+    def copy(self) -> Self:
+        return deepcopy(self)
 
-    @classmethod
-    def from_json(cls, json: str) -> Self:
-        """Loads Layer from json."""
-        return jsonpickle.decode(json)
+    # def to_json(self) -> str:
+    #     """Converts layer to json."""
+    #     return jsonpickle.encode(self)
+
+    # @classmethod
+    # def from_json(cls, json: str) -> Self:
+    #     """Loads Layer from json."""
+    #     return jsonpickle.decode(json)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from itertools import pairwise
 from os import PathLike
@@ -10,6 +11,7 @@ from typing_extensions import Self
 
 from nn.layers import BaseLayer, Dense
 from nn.layers.activators import ActivationLayer
+from nn.normalizators import softmax
 
 
 @dataclass()
@@ -48,10 +50,10 @@ class NeuralNetwork:
     def forward(self, inputs: np.ndarray) -> np.ndarray:
         output = np.reshape(inputs, (self.input_count, 1))
 
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers):
             output = layer.forward(output)
 
-        return np.reshape(output, (output.shape[0],))
+        return output
 
     def backward(self, output_error: np.ndarray, learning_rate: float):
         input_error = output_error
@@ -61,12 +63,21 @@ class NeuralNetwork:
 
     def cross_with(self, other: Self) -> Self:
         return NeuralNetwork(
-            [l1.cross_with(l2) for l1, l2 in zip(self.layers, other.layers)]
+            [
+                np.random.choice([l1.copy(), l2.copy()])
+                for l1, l2 in zip(self.layers, other.layers)
+            ]
         )
 
-    def mutate_network(self, mutation_rate: float):
-        for layer in self.layers:
-            layer.mutate_layer(mutation_rate)
+    def mutate_network(self, perturbing_rate: float):
+        chosen_layer = np.random.choice(
+            list(filter(lambda l: isinstance(l, Dense), self.layers))
+        )
+
+        chosen_layer.mutate_layer(perturbing_rate)
+
+    def copy(self) -> "NeuralNetwork":
+        return NeuralNetwork(deepcopy(self.layers))
 
     def to_json(self) -> str:
         return jsonpickle.encode(self)
@@ -98,8 +109,8 @@ class NeuralNetwork:
 
     @staticmethod
     def from_file(file: PathLike) -> "NeuralNetwork":
-        with open(file) as f:
-            return jsonpickle.decode(f.read())
+        with open(file, "r") as f:
+            return NeuralNetwork.from_json(f.read())
 
     def __iter__(self) -> Iterator[BaseLayer]:
         return iter(self.layers)

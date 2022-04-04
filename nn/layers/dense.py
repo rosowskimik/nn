@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import random
 from typing_extensions import Self
 import numpy as np
 
@@ -42,23 +43,36 @@ class Dense(BaseLayer):
         crossed_layer = Dense(input_size, neuron_count)
 
         for idx in np.ndindex(crossed_layer.weights.shape):
-            crossed_layer.weights[idx] = (
-                self.weights[idx] if np.random.random() < 0.5 else other.weights[idx]
-            )
+            r = np.random.random()
+            if r < 0.33:
+                crossed_layer.weights[idx] = (
+                    self.weights[idx] + other.weights[idx]
+                ) / 2
+            elif r < 0.66:
+                crossed_layer.weights[idx] = self.weights[idx]
+            else:
+                crossed_layer.weights[idx] = other.weights[idx]
 
         for idx in np.ndindex(crossed_layer.biases.shape):
-            crossed_layer.biases[idx] = (
-                self.biases[idx] if np.random.random() < 0.5 else other.biases[idx]
-            )
+            r = np.random.random()
+            if r < 0.33:
+                crossed_layer.biases[idx] = (self.biases[idx] + other.biases[idx]) / 2
+            elif r < 0.66:
+                crossed_layer.biases[idx] = self.biases[idx]
+            else:
+                crossed_layer.biases[idx] = other.biases[idx]
 
         return crossed_layer
 
-    def mutate_layer(self, mutation_rate: float):
+    def mutate_layer(self, perturbing_rate: float = 0.9):
         """Randomly changes layer's weights and biases, based on `mutation_rate`."""
-        for idx in np.ndindex(self.weights.shape):
-            if np.random.random() <= mutation_rate:
-                self.weights[idx] = np.random.random() * 2 - 1
+        target = random.choice(list(np.ndindex(self.weights.shape)))
+        # Value in range [-2; 2)
+        value = np.random.random() * 4.0 - 2.0
 
-        for idx in np.ndindex(self.biases.shape):
-            if np.random.random() <= mutation_rate:
-                self.biases[idx] = np.random.random() * 2 - 1
+        if np.random.random() < perturbing_rate:
+            self.weights[target] *= value
+            self.biases[target[0]] *= value
+        else:
+            self.weights[target] = value
+            self.biases[target[0]] = np.random.random() * 4.0 - 2.0
